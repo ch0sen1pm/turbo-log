@@ -67,7 +67,8 @@ LogSink (多态)                         ← 可插拔输出目标
 - [ ] sinks — 输出目标（Console/File/Effective）
 - [ ] crypt — AES 加密模块
 - [ ] compress — zstd/zlib 压缩
-- [ ] formatter — protobuf 序列化
+- [x] formatter (抽象基类) — Formatter 接口
+- [ ] formatter 实现 — protobuf 序列化
 - [ ] context — 线程池异步执行
 - [ ] mmap — 内存映射写入
 - [ ] decode — 二进制日志解码器
