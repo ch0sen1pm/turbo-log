@@ -59,7 +59,7 @@ LogSink (多态)                         ← 可插拔输出目标
 ## Roadmap
 
 - [x] log_common — 基础类型与日志级别
-- [ ] log_msg — 日志消息结构体
+- [x] log_msg — 日志消息结构体
 - [ ] log_factory — 单例工厂
 - [ ] log_handle — 核心 Sink 管理
 - [ ] log_variadic_handle — 模板格式化层
