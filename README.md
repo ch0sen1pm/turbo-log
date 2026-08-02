@@ -42,7 +42,7 @@ LogSink (多态)                         ← 可插拔输出目标
 
 | 层 | 文件 | 职责 |
 |------|------|------|
-| **基础类型** | `log_common.h` | LogLevel、SourceLocation、类型萃取 |
+| **基础类型** ✅ | `log_common.h` | LogLevel、SourceLocation、类型萃取 |
 | **日志消息** | `log_msg.h` | 消息结构体（位置 + 级别 + 内容） |
 | **单例工厂** | `log_factory.h` | 全局 LogHandle 管理 |
 | **核心抽象** | `log_handle.h` | LogSink 管理 + ShouldLog 过滤 |
@@ -58,7 +58,7 @@ LogSink (多态)                         ← 可插拔输出目标
 
 ## Roadmap
 
-- [ ] log_common — 基础类型与日志级别
+- [x] log_common — 基础类型与日志级别
 - [ ] log_msg — 日志消息结构体
 - [ ] log_factory — 单例工厂
 - [ ] log_handle — 核心 Sink 管理
