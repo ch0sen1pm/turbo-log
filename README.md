@@ -61,7 +61,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] log_common — 基础类型与日志级别
 - [x] log_msg — 日志消息结构体
 - [ ] log_factory — 单例工厂
-- [ ] log_handle — 核心 Sink 管理
+- [x] log_handle — 核心 Sink 管理
 - [ ] log_variadic_handle — 模板格式化层
 - [ ] logger.h — 宏系统
 - [ ] sinks — 输出目标（Console/File/Effective）
