@@ -58,8 +58,7 @@
 
 #if LOGGER_ACTIVE_LEVEL <= LOGGER_LEVEL_CRITICAL
 #define LOG_LOGGER_CRITICAL(handle, ...) LOGGER_CALL(handle, logger::LogLevel::kFatal, __VA_ARGS__)
-#define EXT_LOG_CRITICAL(...)            LOG_LOGGER_CRITICAL(logger::LogFactory::Instance().GetLogHandle(),
-__VA_ARGS__)
+#define EXT_LOG_CRITICAL(...)            LOG_LOGGER_CRITICAL(logger::LogFactory::Instance().GetLogHandle(), __VA_ARGS__)
 #else
 #define LOG_LOGGER_CRITICAL(handle, ...) (void)0
 #define EXT_LOG_CRITICAL(...)            (void)0
