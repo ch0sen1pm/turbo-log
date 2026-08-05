@@ -40,34 +40,56 @@ LogSink (多态)                         ← 可插拔输出目标
 
 ## 模块分层
 
+### 核心链路（已贯通 ✅）
+
+一条日志从调用到输出的完整路径：
+
+| 层 | 文件 | 职责 | 状态 |
+|------|------|------|------|
+| **基础类型** | `log_common.h` | LogLevel、SourceLocation、类型别名、编译期级别宏 | ✅ |
+| **日志消息** | `log_msg.h/.cc` | 消息结构体（位置 + 级别 + 内容） | ✅ |
+| **格式化接口** | `formatter/formatter.h` | 抽象基类：Format 接口 | ✅ |
+| **Sink 接口** | `sinks/sink.h` | 抽象基类：Log / SetFormatter / Flush | ✅ |
+| **核心调度** | `log_handle.h/.cc` | Sink 管理 + ShouldLog 过滤 + atomic 级别 | ✅ |
+| **模板层** | `log_variadic_handle.h` | fmt::format 编译期类型安全检查 | ✅ |
+| **单例工厂** | `log_factory.h/.cc` | 全局 VariadicLogHandle 管理 | ✅ |
+| **宏系统** | `logger.h` | EXT_LOG_TRACE/DEBUG/INFO/WARN/ERROR/CRITICAL + 编译期零开销过滤 | ✅ |
+
+### 实现层
+
+| 层 | 文件 | 职责 | 状态 |
+|------|------|------|------|
+| **纯文本格式化** | `formatter/default_formatter.h/.cc` | 日期 + 级别 + 位置 + pid:tid + 消息 | ✅ |
+| **控制台输出** | `sinks/console_sink.h/.cc` | stdout 输出 | ✅ |
+| **系统工具** | `utils/sys_util.h/.cc` | GetPageSize、GetProcessId、LocalTime | ✅ |
+
+### 待完成
+
 | 层 | 文件 | 职责 |
 |------|------|------|
-| **基础类型** ✅ | `log_common.h` | LogLevel、SourceLocation、类型萃取 |
-| **日志消息** | `log_msg.h` | 消息结构体（位置 + 级别 + 内容） |
-| **单例工厂** | `log_factory.h` | 全局 LogHandle 管理 |
-| **核心抽象** | `log_handle.h` | LogSink 管理 + ShouldLog 过滤 |
-| **模板层** | `log_variadic_handle.h` | fmt::format 类型安全格式化 |
-| **宏系统** | `logger.h` | EXT_LOG_TRACE/DEBUG/INFO/WARN/ERROR/CRITICAL |
-| **Sink 层** | `sinks/` | ConsoleSink、FileSink、EffectiveSink |
+| **pb 格式化** | `formatter/effective_formatter.h/.cc` | protobuf 二进制序列化 |
+| **高效 Sink** | `sinks/effective_sink.h/.cc` | 加密 + 压缩 + mmap 落盘 |
+| **RAII 工具** | `defer.h` | 作用域退出自动清理 |
 | **加密** | `crypt/` | AES 加密/解密 |
 | **压缩** | `compress/` | zstd / zlib 压缩 |
-| **序列化** | `formatter/` | protobuf / 自定义格式化 |
 | **异步执行** | `context/` | 线程池 + 异步执行器 |
-| **内存映射** | `mmap/` | mmap 映射文件写入 |
+| **内存映射** | `mmap/` | mmap 双缓冲写入 |
 | **解码器** | `decode/` | 二进制日志解析/查看 |
 
 ## Roadmap
 
 - [x] log_common — 基础类型与日志级别
 - [x] log_msg — 日志消息结构体
+- [x] formatter — 抽象格式化接口
+- [x] sink — 抽象 Sink 接口
+- [x] log_handle — 核心 Sink 管理 + ShouldLog 过滤
+- [x] log_variadic_handle — 模板格式化层（编译期格式检查）
 - [x] log_factory — 单例工厂
-- [x] log_handle — 核心 Sink 管理
-- [x] log_variadic_handle — 模板格式化层
-- [x] logger.h — 宏系统
-- [ ] sinks — 输出目标（Console/File/Effective）
-- [ ] crypt — AES 加密模块
-- [ ] compress — zstd/zlib 压缩
-- [x] formatter (抽象基类) — Formatter 接口
+- [x] logger.h — 宏系统（编译期零开销级别过滤）
+- [x] sys_util — 系统工具（GetPageSize / GetProcessId / LocalTime）
+- [x] default_formatter — 纯文本格式化
+- [x] console_sink — 控制台输出
+- [x] CMake + example — 构建系统 + 示例（第一条日志已跑通）
 - [ ] formatter 实现 — protobuf 序列化
 - [ ] context — 线程池异步执行
 - [ ] mmap — 内存映射写入
