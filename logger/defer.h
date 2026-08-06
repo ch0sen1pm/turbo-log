@@ -31,7 +31,6 @@ private:
 
 }  // namespace logger
 
-// 下面两个宏让你写 LOG_DEFER { ... } 这种语法
 #define _LOG_CONCAT(a, b) a##b
 #define _MAKE_DEFER_(line) logger::ExecuteOnScopeExit _LOG_CONCAT(defer, line) = [&]()
 
