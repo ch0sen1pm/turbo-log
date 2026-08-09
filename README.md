@@ -90,6 +90,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] sys_util — 系统工具（GetPageSize / GetProcessId / LocalTime）
 - [x] defer — RAII 作用域退出自动清理
 - [x] file_util — 文件大小工具
+- [x] mmap_aux.h — mmap 头文件（类定义 + 接口）
 - [x] default_formatter — 纯文本格式化
 - [x] console_sink — 控制台输出
 - [x] CMake + example — 构建系统 + 示例（第一条日志已跑通）
