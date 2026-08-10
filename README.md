@@ -64,6 +64,7 @@ LogSink (多态)                         ← 可插拔输出目标
 | **系统工具** | `utils/sys_util.h/.cc` | GetPageSize、GetProcessId、LocalTime | ✅ |
 | **RAII 工具** | `defer.h` | 作用域退出自动清理 | ✅ |
 | **文件工具** | `utils/file_util.h/.cc` | GetFileSize | ✅ |
+| **内存映射** | `mmap/mmap_aux.h/.cc` `mmap/mmap_linux.cc` | mmap 双缓冲写入：魔数校验 + 按页扩容 | ✅ |
 
 ### 待完成
 
@@ -74,7 +75,6 @@ LogSink (多态)                         ← 可插拔输出目标
 | **加密** | `crypt/` | AES 加密/解密 |
 | **压缩** | `compress/` | zstd / zlib 压缩 |
 | **异步执行** | `context/` | 线程池 + 异步执行器 |
-| **内存映射** | `mmap/` | mmap 双缓冲写入 |
 | **解码器** | `decode/` | 二进制日志解析/查看 |
 
 ## Roadmap
@@ -90,7 +90,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] sys_util — 系统工具（GetPageSize / GetProcessId / LocalTime）
 - [x] defer — RAII 作用域退出自动清理
 - [x] file_util — 文件大小工具
-- [x] mmap_aux.h — mmap 头文件（类定义 + 接口）
+- [x] mmap — 内存映射文件写入（mmap_aux + mmap_linux）
 - [x] default_formatter — 纯文本格式化
 - [x] console_sink — 控制台输出
 - [x] CMake + example — 构建系统 + 示例（第一条日志已跑通）
