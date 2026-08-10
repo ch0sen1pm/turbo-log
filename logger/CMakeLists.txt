@@ -1,7 +1,9 @@
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(UTIL_SRCS utils/sys_util_linux.cc)
+    set(MMAP_SRCS mmap/mmap_aux.cc mmap/mmap_linux.cc)
 else()
     set(UTIL_SRCS utils/sys_util_linux.cc)
+    set(MMAP_SRCS mmap/mmap_aux.cc mmap/mmap_linux.cc)
 endif()
 
 set(SRCS
@@ -11,6 +13,7 @@ set(SRCS
     formatter/default_formatter.cc
     sinks/console_sink.cc
     ${UTIL_SRCS}
+    ${MMAP_SRCS}
 )
 
 add_library(turbo-log STATIC ${SRCS})
