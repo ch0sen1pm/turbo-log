@@ -3,7 +3,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(MMAP_SRCS mmap/mmap_aux.cc mmap/mmap_linux.cc)
 else()
     set(UTIL_SRCS utils/sys_util_win.cc)
-    set(MMAP_SRCS mmap/mmap_aux.cc mmap/mmap_linux.cc)
+    set(MMAP_SRCS mmap/mmap_aux.cc mmap/mmap_win.cc)
 endif()
 
 set(SRCS
