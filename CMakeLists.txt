@@ -8,6 +8,7 @@ if(DEFINED ENV{VCPKG_ROOT})
 endif()
 
 find_package(fmt CONFIG REQUIRED)
+find_package(cryptopp CONFIG REQUIRED)
 
 add_subdirectory(logger)
 add_subdirectory(example)

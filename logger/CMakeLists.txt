@@ -12,10 +12,12 @@ set(SRCS
     log_factory.cc
     formatter/default_formatter.cc
     sinks/console_sink.cc
+    crypt/crypt.cc
+    crypt/aes_crypt.cc
     ${UTIL_SRCS}
     ${MMAP_SRCS}
 )
 
 add_library(turbo-log STATIC ${SRCS})
 target_include_directories(turbo-log PUBLIC .)
-target_link_libraries(turbo-log PUBLIC fmt::fmt)
+target_link_libraries(turbo-log PUBLIC fmt::fmt cryptopp::cryptopp)
