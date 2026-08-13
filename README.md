@@ -65,6 +65,8 @@ LogSink (多态)                         ← 可插拔输出目标
 | **RAII 工具** | `defer.h` | 作用域退出自动清理 | ✅ |
 | **文件工具** | `utils/file_util.h/.cc` | GetFileSize | ✅ |
 | **内存映射** | `mmap/mmap_aux.h/.cc` `mmap/mmap_linux.cc` | mmap 双缓冲写入：魔数校验 + 按页扩容 | ✅ |
+| **加密** | `crypt/crypt.h/.cc` `crypt/aes_crypt.h/.cc` | ECDH 密钥协商 + AES-256 CBC 加解密 | ✅ |
+| **压缩** | `compress/compress.h` `compress/zstd_compress.h` | 抽象接口 + zstd 头文件（实现待写） | 🟡 |
 
 ### 待完成
 
@@ -72,8 +74,6 @@ LogSink (多态)                         ← 可插拔输出目标
 |------|------|------|
 | **pb 格式化** | `formatter/effective_formatter.h/.cc` | protobuf 二进制序列化 |
 | **高效 Sink** | `sinks/effective_sink.h/.cc` | 加密 + 压缩 + mmap 落盘 |
-| **加密** | `crypt/` | AES 加密/解密 |
-| **压缩** | `compress/` | zstd / zlib 压缩 |
 | **异步执行** | `context/` | 线程池 + 异步执行器 |
 | **解码器** | `decode/` | 二进制日志解析/查看 |
 
@@ -94,9 +94,11 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] default_formatter — 纯文本格式化
 - [x] console_sink — 控制台输出
 - [x] CMake + example — 构建系统 + 示例（第一条日志已跑通）
+- [x] crypt — ECDH 密钥协商 + AES 加密
+- [ ] compress — zstd/zlib 压缩（头文件完成，实现待写）
 - [ ] formatter 实现 — protobuf 序列化
 - [ ] context — 线程池异步执行
-- [ ] mmap — 内存映射写入
+- [ ] effective_sink — 加密 + 压缩 + mmap 落盘
 - [ ] decode — 二进制日志解码器
 
 ## Quick Start
