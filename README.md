@@ -66,7 +66,7 @@ LogSink (多态)                         ← 可插拔输出目标
 | **文件工具** | `utils/file_util.h/.cc` | GetFileSize | ✅ |
 | **内存映射** | `mmap/mmap_aux.h/.cc` `mmap/mmap_linux.cc` | mmap 双缓冲写入：魔数校验 + 按页扩容 | ✅ |
 | **加密** | `crypt/crypt.h/.cc` `crypt/aes_crypt.h/.cc` | ECDH 密钥协商 + AES-256 CBC 加解密 | ✅ |
-| **压缩** | `compress/compress.h` `compress/zstd_compress.h` | 抽象接口 + zstd 头文件（实现待写） | 🟡 |
+| **压缩** | `compress/` | 抽象接口 + zstd + zlib 双实现 | ✅ |
 
 ### 待完成
 
@@ -95,7 +95,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] console_sink — 控制台输出
 - [x] CMake + example — 构建系统 + 示例（第一条日志已跑通）
 - [x] crypt — ECDH 密钥协商 + AES 加密
-- [ ] compress — zstd/zlib 压缩（头文件完成，实现待写）
+- [x] compress — zstd/zlib 压缩
 - [ ] formatter 实现 — protobuf 序列化
 - [ ] context — 线程池异步执行
 - [ ] effective_sink — 加密 + 压缩 + mmap 落盘
