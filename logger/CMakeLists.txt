@@ -14,10 +14,11 @@ set(SRCS
     sinks/console_sink.cc
     crypt/crypt.cc
     crypt/aes_crypt.cc
+    compress/zstd_compress.cc
     ${UTIL_SRCS}
     ${MMAP_SRCS}
 )
 
 add_library(turbo-log STATIC ${SRCS})
 target_include_directories(turbo-log PUBLIC .)
-target_link_libraries(turbo-log PUBLIC fmt::fmt cryptopp::cryptopp)
+target_link_libraries(turbo-log PUBLIC fmt::fmt cryptopp::cryptopp zstd::libzstd)

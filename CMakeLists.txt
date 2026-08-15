@@ -9,6 +9,7 @@ endif()
 
 find_package(fmt CONFIG REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
+find_package(zstd CONFIG REQUIRED)
 
 add_subdirectory(logger)
 add_subdirectory(example)
