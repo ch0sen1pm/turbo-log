@@ -97,7 +97,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] crypt — ECDH 密钥协商 + AES 加密
 - [x] compress — zstd/zlib 压缩
 - [ ] formatter 实现 — protobuf 序列化
-- [ ] context — 线程池异步执行（thread_pool 已完整，executor/context 待写）
+- [ ] context — 线程池异步执行（thread_pool 完整，executor.h 已写，executor.cc/定时器/context 待写）
 - [ ] effective_sink — 加密 + 压缩 + mmap 落盘
 - [ ] decode — 二进制日志解码器
 
