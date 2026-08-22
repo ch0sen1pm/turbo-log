@@ -41,6 +41,28 @@ public:
             return ret;
         }
     
+    template <typename R, typename P>
+    void PostDelayedTask(const TaskRunnerTag& runner_tag, Task task,
+                         const std::chrono::duration<R, P>& delta) {
+        Task func = std::bind(&Executor::PostTask, this, runner_tag, std::move(task));
+
+        executor_timer_->Start();
+        executor_timer_->PostDelayedTask(std::move(func),
+                                         std::chrono::duration_cast<std::chrono::microseconds>(delta));
+    }
+
+    template <typename R, typename P>
+    RepeatedTaskId PostRepeatedTask(const TaskRunnerTag& runner_tag, Task task,
+                                    const std::chrono::duration<R, P>& delta, uint64_t repeat_num) {
+        Task func = std::bind(&Executor::PostTask, this, runner_tag, std::move(task));
+        executor_timer_->Start();
+        return executor_timer_->PostRepeatedTask(std::move(func),
+                                                 std::chrono::duration_cast<std::chrono::microseconds>(delta),
+                                                 repeat_num);
+    }
+
+    void CancelRepeatedTask(RepeatedTaskId task_id) { executor_timer_->CancelRepeatedTask(task_id); }
+    
 private:
     class ExecutorContext {
     public:
@@ -62,8 +84,51 @@ private:
         std::unordered_map<TaskRunnerTag, TaskRunnerPtr> task_runner_dict_;
         std::mutex mutex_;
     };
+
+    class ExecutorTimer {
+    public:
+        struct InternalS {
+            std::chrono::time_point<std::chrono::high_resolution_clock> time_point;
+            Task task;
+            RepeatedTaskId repeated_id;
+
+            bool operator<(const InternalS& b) const { return time_point > b.time_point; }
+        };
+
+        ExecutorTimer();
+        ~ExecutorTimer();
+
+        ExecutorTimer(const ExecutorTimer& other) = delete;
+        ExecutorTimer& operator=(const ExecutorTimer& other) = delete;
+
+        bool Start();
+        void Stop();
+
+        void PostDelayedTask(Task task, const std::chrono::microseconds& delta);
+        RepeatedTaskId PostRepeatedTask(Task task, const std::chrono::microseconds& delta, uint64_t repeat_num);
+        void CancelRepeatedTask(RepeatedTaskId task_id);
+
+    private:
+        void Run_();
+        void PostRepeatedTask_(Task task, const std::chrono::microseconds& delta,
+                               RepeatedTaskId repeated_task_id, uint64_t repeated_num);
+        void PostTask_(Task task, std::chrono::microseconds delta,
+                       RepeatedTaskId repeated_task_id, uint64_t repeated_num);
+
+        RepeatedTaskId GetNextRepeatedTaskId() { return repeated_task_id_ ++; }
+
+        std::priority_queue<InternalS> queue_;
+        std::mutex mutex_;
+        std::condition_variable cond_;
+        std::atomic<bool> running_;
+        std::unique_ptr<ThreadPool> thread_pool_;
+        
+        std::atomic<RepeatedTaskId> repeated_task_id_;
+        std::unordered_set<RepeatedTaskId> repeated_id_state_set_;
+    };
 private:
     std::unique_ptr<ExecutorContext> executor_context_;
+    std::unique_ptr<ExecutorTimer> executor_timer_;
 };
 
 
