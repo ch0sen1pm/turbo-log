@@ -28,7 +28,7 @@ private:
     std::unique_ptr<ExecutorManager> executor_manager_;
 };
 
-} // namespace ctx;
+} // namespace ctx
 } // namespace logger
 
 
