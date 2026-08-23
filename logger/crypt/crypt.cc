@@ -1,5 +1,7 @@
 #include "crypt/crypt.h"
 
+#include <stdexcept>
+
 #include "cryptopp/aes.h"
 #include "cryptopp/base64.h"
 #include "cryptopp/cryptlib.h"
@@ -44,8 +46,7 @@ std::tuple<std::string, std::string> GenECDHKey() {
 
     return std::make_tuple(
         std::string(reinterpret_cast<const char*>(priv.data()), priv.size()),
-        std::string(reinterpret_cast<const char*>(pub.data()), pub.size());
-    )
+        std::string(reinterpret_cast<const char*>(pub.data()), pub.size()));
 }
 
 std::string GenECDHSharedSecret(const std::string& client_pri,
