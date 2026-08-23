@@ -96,7 +96,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] CMake + example — 构建系统 + 示例（第一条日志已跑通）
 - [x] crypt — ECDH 密钥协商 + AES 加密
 - [x] compress — zstd/zlib 压缩
-- [ ] formatter 实现 — protobuf 序列化
+- [x] effective_formatter — protobuf 二进制序列化
 - [x] context — 线程池异步执行（thread_pool + executor + 定时器 + 单例宏）
 - [ ] effective_sink — 加密 + 压缩 + mmap 落盘
 - [ ] decode — 二进制日志解码器
