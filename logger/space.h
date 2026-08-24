@@ -32,7 +32,7 @@ public:
 
     constexpr _Rep count() const { return _rep; }
 
-    constexpr space operator+() const { return *this }
+    constexpr space operator+() const { return *this; }
     constexpr space operator-() const { return space(-count()); }
 
     space& operator++() { ++_rep; return *this; }
