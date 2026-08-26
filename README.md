@@ -98,7 +98,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] compress — zstd/zlib 压缩
 - [x] effective_formatter — protobuf 二进制序列化
 - [x] context — 线程池异步执行（thread_pool + executor + 定时器 + 单例宏）
-- [ ] effective_sink — 加密 + 压缩 + mmap 落盘（space.h 已写，本体待写）
+- [ ] effective_sink — 加密 + 压缩 + mmap 落盘（space.h + effective_sink.h 已写，.cc 待写）
 - [ ] decode — 二进制日志解码器
 
 ## Quick Start
