@@ -43,6 +43,16 @@ public:
         megabytes total_size{100}; 
     };
 
+    explicit EffectiveSink(Conf conf);
+
+    ~EffectiveSink() override = default;
+
+    void Log(const LogMsg& msg) override;
+
+    void SetFormatter(std::unique_ptr<Formatter> formatter) override;
+
+    void Flush() override;
+
 private:
     void SwapCache_();
     bool NeedCacheToFile_();
