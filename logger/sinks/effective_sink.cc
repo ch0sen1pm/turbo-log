@@ -164,4 +164,63 @@ void EffectiveSink::CacheToFile_() {
     is_slave_free_.store(true);
 }
 
+std::filesystem::path EffectiveSink::GetFilePath_() {
+    auto GetDateTimePath = [this]() -> std::filesystem::path {
+        std::time_t now = std::time(nullptr);
+        std::tm tm;
+        LocalTime(&tm, &now);
+        char time_buf[32] = {0};
+        std::strftime(time_buf, sizeof(time_buf), "%Y%m%d%H%M%S", &tm);
+        return (conf_.dir / (conf_.prefix + "_" + time_buf));
+    };
+
+    if (log_file_path_.empty()) {
+        log_file_path_ = GetDateTimePath().string() + ".log";
+    } else {
+        auto file_size = fs::GetFileSize(log_file_path_);
+        bytes single_bytes = space_cast<bytes>(conf_.single_size);
+        if (file_size > single_bytes.count()) {
+            auto date_time_path = GetDateTimePath();
+            auto file_path = date_time_path.string() + ".log";
+            if (std::filesystem::exists(file_path)) {
+                int index = 0;
+                for (auto& p : std::filesystem::directory_iterator(conf_.dir)) {
+                    if (p.path().filename().string().find(date_time_path.string()) != std::string::npos) {
+                        index ++;
+                    }
+                }
+                log_file_path_ = date_time_path.string() + "_" + std::to_string(index) + ".log";
+            } else {
+                log_file_path_ = file_path;
+            }
+        }
+    }
+    return log_file_path_;
+}
+
+void EffectiveSink::ElimateFiles_() {
+    std::vector<std::filesystem::path> files;
+
+    for (auto& p : std::filesystem::directory_iterator(conf_.dir)) {
+        if (p.path().extension() == ".log") {
+            files.push_back(p.path());
+        }
+    }
+
+    std::sort(files.begin(), files.end(),
+              [](const std::filesystem::path& lhs, const std::filesystem::path& rhs) {
+                return std::filesystem::last_write_time(lhs) > std::filesystem::last_write_time(rhs);
+              });
+
+    size_t total_bytes = space_cast<bytes>(conf_.total_size).count();
+    size_t used_bytes = 0;
+
+    for (auto& file : files) {
+        used_bytes += fs::GetFileSize(file);
+        if (used_bytes > total_bytes) {
+            std::filesystem::remove(file);
+        }
+    }
+}
+
 }
