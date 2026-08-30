@@ -15,3 +15,4 @@ find_package(protobuf CONFIG REQUIRED)
 
 add_subdirectory(logger)
 add_subdirectory(example)
+add_subdirectory(decode)
