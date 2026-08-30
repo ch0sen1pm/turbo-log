@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "effective_msg.pb.h"
+#include "proto/effective_msg.pb.h"
 
 class DecodeFormatter {
 public:

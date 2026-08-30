@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "effective_msg.pb.h"
+#include "proto/effective_msg.pb.h"
 
 class FlagFormatter {
 public:
