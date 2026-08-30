@@ -96,7 +96,72 @@ void EffectiveSink::Log(const LogMsg& msg) {
         }
         PrepareToFile_();
     }
+}
 
+void EffectiveSink::SetFormatter(std::unique_ptr<Formatter> formatter) {}
+
+void EffectiveSink::Flush() {
+    TIMER_COUNT("Flush");
+
+    PrepareToFile_();
+    WAIT_TASK_IDLE(task_runner_);
+
+    if (is_slave_free_.load()) {
+        is_slave_free_.store(false);
+        SwapCache_();
+    }
+    PrepareToFile_();
+    WAIT_TASK_IDLE(task_runner_);
+}
+
+void EffectiveSink::SwapCache_() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::swap(master_cache_, slave_cache_);
+}
+
+bool EffectiveSink::NeedCacheToFile_() {
+    return master_cache_->GetRatio() > 0.8;
+}
+
+void EffectiveSink::WriteToCache_(const void* data, uint32_t size) {
+    detail::ItemHeader item_header;
+    item_header.size = size;
+
+    master_cache_->Push(&item_header, sizeof(item_header));
+    master_cache_->Push(data, size);
+}
+
+void EffectiveSink::PrepareToFile_() {
+    POST_TASK(task_runner_, [this]() { CacheToFile_(); });
+}
+
+void EffectiveSink::CacheToFile_() {
+    TIMER_COUNT("CacheToFile_");
+
+    if (is_slave_free_.load()) {
+        return;
+    }
+
+    if (slave_cache_->Empty()) {
+        is_slave_free_.store(true);
+        return;
+    }
+
+    {
+        auto file_path = GetFilePath_();
+
+        detail::ChunkHeader chunk_header;
+        chunk_header.size = slave_cache_->Size();
+        memcpy(chunk_header.pub_key, client_pub_key_.data(), client_pub_key_.size());
+
+        std::ofstream ofs(file_path, std::ios::binary | std::ios::app);
+        ofs.write(reinterpret_cast<char*>(&chunk_header), sizeof(chunk_header));
+        ofs.write(reinterpret_cast<char*>(slave_cache_->Data()), chunk_header.size);
+        ofs.close();
+    }
+
+    slave_cache_->Clear();
+    is_slave_free_.store(true);
 }
 
 }
