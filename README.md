@@ -100,7 +100,7 @@ LogSink (多态)                         ← 可插拔输出目标
 - [x] effective_formatter — protobuf 二进制序列化
 - [x] context — 线程池异步执行（thread_pool + executor + 定时器 + 单例宏）
 - [x] effective_sink — 加密 + 压缩 + mmap 落盘（全链路完成）
-- [ ] decode — 二进制日志解码器
+- [x] decode — 二进制日志解码器
 
 ## Quick Start
 
