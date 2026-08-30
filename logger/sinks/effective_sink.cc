@@ -19,20 +19,14 @@ EffectiveSink::EffectiveSink(Conf conf) : conf_(std::move(conf)) {
     }
 
     task_runner_ = NEW_TASK_RUNNER(10086);
-
     formatter_ = std::make_unique<EffectiveFormatter>();
-
     auto ecdh_key = crypt::GenECDHKey();
     auto client_pri = std::get<0>(ecdh_key);
     client_pub_key_ = std::get<1>(ecdh_key);
-
     std::string svr_pub_key_bin = crypt::HexKeyToBinary(conf_.pub_key);
     std::string shared_secret = crypt::GenECDHSharedSecret(client_pri, svr_pub_key_bin);
-
     crypt_ = std::make_unique<crypt::AESCrypt>(shared_secret);
-
     compress_ = std::make_unique<compress::ZstdCompress>();
-
     master_cache_ = std::make_unique<MMapAux>(conf_.dir / "master_cache");
     slave_cache_ = std::make_unique<MMapAux>(conf_.dir / "slave_cache");
 

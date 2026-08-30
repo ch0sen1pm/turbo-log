@@ -4,6 +4,7 @@ namespace logger {
 namespace ctx {
 Executor::Executor() {
     executor_context_ = std::make_unique<ExecutorContext>();
+    executor_timer_ = std::make_unique<ExecutorTimer>();
 }
 
 Executor::~Executor() {
