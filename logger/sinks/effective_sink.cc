@@ -57,4 +57,46 @@ EffectiveSink::EffectiveSink(Conf conf) : conf_(std::move(conf)) {
     POST_REPEATED_TASK(task_runner_, [this]() { ElimateFiles_(); }, conf_.interval, -1);
 }
 
+void EffectiveSink::Log(const LogMsg& msg) {
+    static thread_local MemoryBuf buf;
+
+    formatter_->Format(msg, &buf);
+
+    if (master_cache_->Empty()) {
+        compress_->ResetStream();
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+
+        compressed_buf_.reserve(compress_->CompressedBound(buf.size()));
+        size_t compressed_size = 
+            compress_->Compress(buf.data(), buf.size(), compressed_buf_.data(), compressed_buf_.capacity());
+
+        if (compressed_size == 0) {
+            LOG_ERROR("EffectiveSink::Log: compress failed");
+            return;
+        }
+
+        encryped_buf_.clear();
+        encryped_buf_.reserve(compressed_size + 16);
+        crypt_->Encrypt(compressed_buf_.data(), compressed_size, encryped_buf_);
+        if (encryped_buf_.empty()) {
+            LOG_ERROR("EffectiveSink::Log: encrypt failed");
+            return;
+        }
+
+        WriteToCache_(encryped_buf_.data(), encryped_buf_.size());
+    }
+
+    if (NeedCacheToFile_()) {
+        if (is_slave_free_.load()) {
+            is_slave_free_.store(false);
+            SwapCache_();
+        }
+        PrepareToFile_();
+    }
+
+}
+
 }
